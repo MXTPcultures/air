@@ -15,4 +15,6 @@ python build.py
 ```
 the static site will be placed in a `build` directory, which can be copied and run on any web server.  
 
+![alt-text](https://raw.githubusercontent.com/paidforby/air/master/static/textures/air.jpg)
+
 All content for this project is licensed to paidforby and Liz G under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
