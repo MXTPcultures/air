@@ -10,13 +10,12 @@ def main():
     return render_template('index.html', data = root)
 
 @app.route('/p/<p>')
-def page(p):
+def page(p): 
 
-    # Example route: example.com/p/abc
     pages = {
-        '1': { 'js_file': 'chapter_1/title/main.js', 'next_page': 2},
-        '2': { 'js_file': 'chapter_1/piece/main.js' },
-        '3': { 'js_file': 'chapter_2/title/main.js', 'button': True } # or some other data telling it where to go next
+        '1': { 'js_file': 'chapter_1/title.js', 'next_page': 2},
+        '2': { 'js_file': 'chapter_1/piece.js', 'next_page': 3},
+        '3': { 'js_file': 'chapter_2/title.js', 'button': True } # or some other data telling it where to go next
     }
 
     if p in pages:
