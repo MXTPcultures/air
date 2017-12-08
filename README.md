@@ -15,4 +15,4 @@ python build.py
 ```
 the static site will be placed in a `build` directory, which can be copied and run on any web server.  
 
-All content for this project is licensed to paidforby and Liz G under CC-BY-SA 4.0
+All content for this project is licensed to paidforby and Liz G under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
