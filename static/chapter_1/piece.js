@@ -104,11 +104,11 @@ function init() {
     /* IMPORT VIDEOS HERE
     */ // this could be functionalized further
 
-    loadVideo("media/cops.mp4", 0);
+    loadVideo("/static/media/cops.mp4", 0);
     //screen[0].position.y = -50;
     scene.add(screen[0]);
 
-    loadVideo("media/partis.mp4", 1);
+    loadVideo("/static/media/partis.mp4", 1);
     //screen[1].position.y = -50;
     scene.add(screen[1]);
 

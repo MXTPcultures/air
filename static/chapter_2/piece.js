@@ -74,19 +74,19 @@ function init() {
     /* IMPORT VIDEOS HERE
     */ 
     // this could be better, return scene add, xyz positioning
-    loadVideo("media/resist2.mp4", 0);
+    loadVideo("/static/media/resist2.mp4", 0);
     //screen[0].position.y = -50;
     scene.add(screen[0]);
 
-    loadVideo("media/streets.m4v", 1);
+    loadVideo("/static/media/streets.m4v", 1);
     screen[1].position.y = -50;
     scene.add(screen[1]);
 
-    loadVideo("media/bookstore1s.mp4", 2);
+    loadVideo("/static/media/bookstore1s.mp4", 2);
     screen[2].position.y = -50;
     scene.add(screen[2]);
 
-    loadVideo("media/bookstore2s.mp4", 3);
+    loadVideo("/static/media/bookstore2s.mp4", 3);
     screen[3].position.y = -50;
     scene.add(screen[3]);
 

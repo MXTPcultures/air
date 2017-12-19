@@ -13,6 +13,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://paidforby.github.io/LikeAir/examples/js/Detector.js"></script>
         <script src="https://paidforby.github.io/LikeAir/examples/js/OrbitControls.js"></script>
+        <script src="https://threejs.org/examples/js/GPUParticleSystem.js"></script>
 
         <!--
         <script src="https://paidforby.github.io/LikeAir/libs/webcam_feed.js"></script>
@@ -20,14 +21,6 @@
         -->
         <script src="https://paidforby.github.io/LikeAir/libs/video_import.js"></script>
         <script src="https://paidforby.github.io/LikeAir/libs/midi_control.js"></script>
-
-        <!--<script type="text/javascript">
-            $(document).ready(function(){
-                $("#next").click(function(){
-                    $("#body").load("main.html");
-                });
-            });
-        </script>-->
 
     </head>
     <body>
@@ -39,7 +32,7 @@
         -->
 
         <!--
-        to run entirely locallly you need these packages
+        to run entirely locally you need these packages
         TODO create packages.json to git these
         <script src="js/Detector.js"></script>
         <script src="js/OrbitControls.js"></script>
@@ -90,7 +83,7 @@
             <div id="container"></div> 
             <div id="handle"></div>
             <div id="controller">
-                <a href="/p/{{ data.next_page }}" id="next" class="more round">next piece<a>
+                <a href="{{ url_for("page", p=data.next_page) }}" id="next" class="more round">next piece<a>
             </div>
 
             <video id="monitor" autoplay width="160" height="120" style="visibility: hidden; float:left;"></video>
@@ -108,8 +101,6 @@
         <div id="body">
             
             <script src= "/static/{{ data.js_file }}" ></script>
-            <!-- All content will be loaded here dynamically -->
-            <!-- <script src="main.js"></script> -->
 
         </div>
 

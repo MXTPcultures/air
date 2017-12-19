@@ -9,10 +9,11 @@ cd air
 python air.py
 ```
 
-or it can be built into a static site by running,
+or it can be built into a static site by running, 
 ```
 python build.py
 ```
+(feature not currently working due url generator error)
 the static site will be placed in a `build` directory, which can be copied and run on any web server.  
 
 ![alt-text](https://raw.githubusercontent.com/paidforby/air/master/static/textures/air.jpg)

@@ -37,7 +37,7 @@ function init() {
     THREE.TextureLoader.crossOrigin = '';
 
     var geometry = new THREE.PlaneGeometry(500,500);
-    var material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('textures/fall.jpg',THREE.SphericalRefractionMapping) } );
+    var material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('/static/textures/fall.jpg',THREE.SphericalRefractionMapping) } );
     var eyeball = new THREE.Mesh( geometry, material );
     //eyeball.rotation.x = Math.PI/2;
     eyeball.overdraw = true;

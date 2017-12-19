@@ -61,17 +61,17 @@ function init() {
     /* IMPORT VIDEOS HERE
     */ 
     // this could be better, return scene add, xyz positioning
-    loadVideo("media/falldown.m4v", 0);
+    loadVideo("/static/media/falldown.m4v", 0);
     screen[0].position.y = 50
     scene.add(screen[0]);
 
-    loadVideo("media/nature1.m4v", 1);
+    loadVideo("/static/media/nature1.m4v", 1);
     scene.add(screen[1]);
 
-    loadVideo("media/nature3s.m4v", 2);
+    loadVideo("/static/media/nature3s.m4v", 2);
     scene.add(screen[2]);
 
-    loadVideo("media/dayparti.mp4", 3);
+    loadVideo("/static/media/dayparti.mp4", 3);
     scene.add(screen[3]);
 
     /* END IMPORT
