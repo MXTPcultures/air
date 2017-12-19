@@ -160,7 +160,7 @@ function init() {
         bar[i].light.add( new THREE.Mesh( adeymo.shape, new THREE.MeshBasicMaterial( { color: bar[i].color } ) ) );
         bar[i].light.position.x = 20*i-70;
         bar[i].light.position.y = 70;
-         bar[i].light.position.z = 5;
+        bar[i].light.position.z = 5;
         bar[i].light.visible = false;
         scene.add( bar[i].light );
 
@@ -208,7 +208,6 @@ function init() {
         else {
             var colors = randomColor({ luminosity: 'light', hue: 'red' });
         }
-        console.log(select);
         
         star[p] = new THREE.PointLight( colors, 10, 50 );
         star[p].add( new THREE.Mesh( starShape, new THREE.MeshBasicMaterial( { color: colors } ) ) );
@@ -307,7 +306,7 @@ function init() {
     controls = new THREE.OrbitControls( camera, renderer.domElement );
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    console.log(controls);
+    //console.log(controls);
     gui.domElement.id = 'gui';
 
     controller.appendChild(gui.domElement);
@@ -441,7 +440,7 @@ function screenSwitch(control, index){
         if(screen[index].visible){
             fadeOut(index, 1/control.velocity);
         }else{
-            console.log(video[index]);
+            //console.log(video[index]);
             video[index].play();
             fadeIn(screen[index], 1/control.velocity, .3);
             
@@ -464,6 +463,7 @@ function pressLength(control){
     return length;
 }
 
+/*
 function pulseAnimation(object){
     if (object.pulse_inc == 1){
         object.pulse.material.uniforms[ "c" ].value += pulse_options.pace;
@@ -477,8 +477,8 @@ function pulseAnimation(object){
 }
 
 function pulseMaterial(color){
-    var pulseMaterial = new THREE.ShaderMaterial( 
-    {
+    var pulseMaterial = new THREE.ShaderMaterial(
+    { 
         uniforms: 
         { 
             "c":   { type: "f", value: .1 }, // intensity variables 
@@ -486,14 +486,16 @@ function pulseMaterial(color){
             pulseColor: { type: "c", value: new THREE.Color(color) },
             viewVector: { type: "v3", value: camera.position }
         },
-        vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
+
+        vertexShader: document.getElementById( 'vertexShader'   ).textContent,
         fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
         side: THREE.FrontSide,
         blending: THREE.AdditiveBlending,
         transparent: true
-    }   );
+    } );
     return pulseMaterial 
 }
+*/
 
 function barFormation(control, object){
     if(control.pressed && object.height < 200){
@@ -594,7 +596,7 @@ function render( time ){
     olivia.pulse.scale.y = olivia.size;
     olivia.pulse.scale.z = olivia.size;
 
-    adeymo.size = ease(knob.svn.value*100, adeymo.size, .1)
+    adeymo.size = ease(knob.six.value*100, adeymo.size, .1)
     adeymo.pulse.scale.x = adeymo.size;
     adeymo.pulse.scale.y = adeymo.size;
     adeymo.pulse.scale.z = adeymo.size;

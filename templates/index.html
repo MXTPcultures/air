@@ -15,10 +15,42 @@
         <script src="https://paidforby.github.io/LikeAir/examples/js/OrbitControls.js"></script>
         <script src="https://threejs.org/examples/js/GPUParticleSystem.js"></script>
 
+        <!-- vertex shader -->
+        <script id="vertexShader" type="x-shader/x-vertex">
+        
+        uniform vec3 viewVector;
+        uniform float c;
+        uniform float p;
+        varying float intensity;
+        void main() 
+        { 
+            vec3 vNormal = normalize( normalMatrix * normal );
+            vec3 vNormel = normalize( normalMatrix * viewVector );
+            intensity = pow( c - dot(vNormal, vNormel), p );
+            
+            gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+        }
+        
+        </script>
+
+        <!-- fragment shader a.k.a. pixel shader -->
+        <script id="fragmentShader" type="x-shader/x-fragment">
+       
+        uniform vec3 pulseColor;
+        varying float intensity;
+        void main() 
+        {
+            vec3 glow = pulseColor * intensity;
+            gl_FragColor = vec4( glow, 1.0 );
+        }
+        
+        </script>
+
         <!--
         <script src="https://paidforby.github.io/LikeAir/libs/webcam_feed.js"></script>
         <script src="https://paidforby.github.io/LikeAir/libs/generate_video.js"></script>
         -->
+        <script src="/static/pulse.js"></script>
         <script src="https://paidforby.github.io/LikeAir/libs/video_import.js"></script>
         <script src="https://paidforby.github.io/LikeAir/libs/midi_control.js"></script>
 
@@ -51,58 +83,25 @@
         <script src="libs/midi_control.js"></script>
         -->
 
-        <div id="header">
 
-            <!-- vertex shader -->
-            <script id="vertexShader" type="x-shader/x-vertex">
-            uniform vec3 viewVector;
-            uniform float c;
-            uniform float p;
-            varying float intensity;
-            void main() 
-            { 
-                vec3 vNormal = normalize( normalMatrix * normal );
-                vec3 vNormel = normalize( normalMatrix * viewVector );
-                intensity = pow( c - dot(vNormal, vNormel), p );
-                
-                gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-            }
-            </script>
+        <div id="container"></div> 
+        <div id="handle"></div>
+        <div id="controller">
+            <a href="{{ url_for("page", p=data.next_page) }}" id="next" class="more round">next piece<a>
 
-            <!-- fragment shader a.k.a. pixel shader -->
-            <script id="fragmentShader" type="x-shader/x-vertex"> 
-            uniform vec3 pulseColor
-            varying float intensity;
-            void main() 
-            {
-                vec3 glow = pulseColor * intensity;
-                gl_FragColor = vec4( glow, 1.0 );
-            }
-            </script>
+        <video id="monitor" autoplay width="160" height="120" style="visibility: hidden; float:left;"></video>
 
-            <div id="container"></div> 
-            <div id="handle"></div>
-            <div id="controller">
-                <a href="{{ url_for("page", p=data.next_page) }}" id="next" class="more round">next piece<a>
-            </div>
-
-            <video id="monitor" autoplay width="160" height="120" style="visibility: hidden; float:left;"></video>
-
-            <canvas id="videoImage0" width="160" height="120" style="visibility: hidden; float:left;"></canvas>
-            <canvas id="videoImage1" width="160" height="120" style="visibility: hidden; float:left;"></canvas>
-            <canvas id="videoImage2" width="160" height="120" style="visibility: hidden; float:left;"></canvas>
-            <canvas id="videoImage3" width="160" height="120" style="visibility: hidden; float:left;"></canvas>
-            <canvas id="videoImage4" width="160" height="120" style="visibility: hidden; float:left;"></canvas>
-            <canvas id="videoImage5" width="160" height="120" style="visibility: hidden; float:left;"></canvas>
-            <canvas id="videoImage6" width="160" height="120" style="visibility: hidden; float:left;"></canvas>
-            <canvas id="videoImage7" width="160" height="120" style="visibility: hidden; float:left;"></canvas>
-        </div>
+        <canvas id="videoImage0" width="160" height="120" style="visibility: hidden; float:left;"></canvas>
+        <canvas id="videoImage1" width="160" height="120" style="visibility: hidden; float:left;"></canvas>
+        <canvas id="videoImage2" width="160" height="120" style="visibility: hidden; float:left;"></canvas>
+        <canvas id="videoImage3" width="160" height="120" style="visibility: hidden; float:left;"></canvas>
+        <canvas id="videoImage4" width="160" height="120" style="visibility: hidden; float:left;"></canvas>
+        <canvas id="videoImage5" width="160" height="120" style="visibility: hidden; float:left;"></canvas>
+        <canvas id="videoImage6" width="160" height="120" style="visibility: hidden; float:left;"></canvas>
+        <canvas id="videoImage7" width="160" height="120" style="visibility: hidden; float:left;"></canvas>
         
-        <div id="body">
-            
-            <script src= "/static/{{ data.js_file }}" ></script>
+        <script src= "/static/{{ data.js_file }}" ></script>
 
-        </div>
 
     </body>
 </html>
