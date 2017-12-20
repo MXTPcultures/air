@@ -151,6 +151,11 @@ function init() {
     }
 
     //super lazy
+    /*for(i = 0 ; i <= 12 ; i++){
+        eyes[i].light.position.x = 120 - 20*i ;
+        eyes[i].light.position.y = 15 + 5*i;
+    }*/
+
     eyes[0].light.position.x = -120;
     eyes[0].light.position.y = 15;
 
@@ -477,12 +482,12 @@ function render( time ){
     range = knob.fve.value*(pulse_options.max-pulse_options.min)+pulse_options.min;
     pulse_options.pace = ease(range, pulse_options.pace, .05);
 
-    olivia.size = ease(knob.six.value*50, olivia.size, .01)
+    olivia.size = ease(knob.six.value*50, olivia.size, .001)
     olivia.pulse.scale.x = olivia.size;
     olivia.pulse.scale.y = olivia.size;
     olivia.pulse.scale.z = olivia.size;
 
-    adeymo.size = ease(knob.svn.value*3, adeymo.size, .01)
+    adeymo.size = ease(knob.svn.value*3, adeymo.size, .001)
     adeymo.pulse.scale.x = adeymo.size;
     adeymo.pulse.scale.y = adeymo.size;
     adeymo.pulse.scale.z = adeymo.size;
@@ -490,7 +495,6 @@ function render( time ){
     // slow/stop pulse
     pulseAnimation(olivia);
     
-    //pulseAnimation(adeymo);
     olivia.pulse.lookAt(camera.position);
     adeymo.pulse.lookAt(camera.position);
 
@@ -559,6 +563,7 @@ function render( time ){
         }
     }   
     if(bookstore){
+        pulseAnimation(adeymo);
         adeymo.light.position.x = ease(-90, adeymo.light.position.x, .001 );
         adeymo.light.position.y = ease(0, adeymo.light.position.y, .001 );
         adeymo.light.position.z = ease(0, adeymo.light.position.z, .001 );

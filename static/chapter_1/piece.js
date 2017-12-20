@@ -90,39 +90,24 @@ function init() {
     scene.add( new THREE.AmbientLight( 0x00020 ) );
     scene.fog = new THREE.FogExp2( 0x00000, 0.02 );
 
-    /* add animation importer
-    loader = new THREE.JSONLoader();
-    loader.load( "media/monkey.json", 
-        function ( obj ) {
-            //add the loaded object to the scene
-            object = new THREE.Mesh( obj, new THREE.MeshPhongMaterial( { color: 0x555555, specular: 0x111111, shininess: 50 }  )  );
-            object.scale.x = object.scale.y = object.scale.z = 2;
-            scene.add( object );
-    }
-    );*/
-    
     /* IMPORT VIDEOS HERE
     */ // this could be functionalized further
 
     loadVideo("/static/media/cops.mp4", 0);
-    //screen[0].position.y = -50;
     scene.add(screen[0]);
 
     loadVideo("/static/media/partis.mp4", 1);
-    //screen[1].position.y = -50;
     scene.add(screen[1]);
 
-    /*loadVideo("media/bookstore1s.mp4", 2);
-    screen[2].position.y = -50;
-    scene.add(screen[2]);
+    loadVideo("/static/media/falldown.mp4", 1);
+    scene.add(screen[4]);
 
-    loadVideo("media/bookstore2s.mp4", 3);
-    screen[3].position.y = -50;
-    scene.add(screen[3]);*/
+    videoControls(0);
+    videoControls(1);
+    videoControls(2);
 
     /* END IMPORT
     */
-
 
     /* CREATE MAIN POINT LIGHT
     */
@@ -163,12 +148,6 @@ function init() {
         bar[i].light.position.z = 5;
         bar[i].light.visible = false;
         scene.add( bar[i].light );
-
-        /*bar[i].pulse = new THREE.Mesh( adeymo.shape.clone(), pulseMaterial(adeymo.color) );
-        bar[i].pulse.position = adeymo.shape.position;
-        bar[i].pulse.scale.multiplyScalar(36);
-        bar[i].pulse.visible = false;
-        scene.add( bar[i].pulse );*/
     }
 
     for(var i = 0 ; i < 8 ; i++){
@@ -179,12 +158,6 @@ function init() {
         cal[i].light.position.y = 20*i-70;
         cal[i].light.visible = false;
         scene.add( cal[i].light );
-
-        /*bar[i].pulse = new THREE.Mesh( adeymo.shape.clone(), pulseMaterial(adeymo.color) );
-        bar[i].pulse.position = adeymo.shape.position;
-        bar[i].pulse.scale.multiplyScalar(36);
-        bar[i].pulse.visible = false;
-        scene.add( bar[i].pulse );*/
     }
 
     /* END MAIN POINT LIGHT
@@ -229,67 +202,11 @@ function init() {
     /* END STAR SYSTEM
     */
 
-    /* CREATE PARTICLE SYSTEM
-    */
-    // make less cubical, alter origin? tie to another mesh?
-    /*particleSystem = new THREE.GPUParticleSystem( {
-        maxParticles: 2500000
-    } );
-
-    scene.add( particleSystem );*/
-
-    // make particle_options controllable from midi
-    /*particle_options = {
-        position: new THREE.Vector3(),
-        positionRandomness: 50,
-        velocity: new THREE.Vector3(),
-        velocityRandomness: 0,
-        color: olivia.color, //0xaa88ff,
-        colorRandomness: .2,
-        turbulence: 0,
-        lifetime: .2,
-        size: 30,
-        sizeRandomness: 1
-    };
-
-    spawnerOptions = {
-        spawnRate: 5000,
-        horizontalSpeed: 0,
-        verticalSpeed: 0,
-        timeScale: .05,
-    };
-
-    gui.add( particle_options, "lifetime", .1, 10 );*/
-    /* END PARTICLE SYSTEM
-    */
-
-
     var f0 = gui.addFolder('pulsing')    
     gui.add( pulse_options, "pace", pulse_options.min, pulse_options.max ).listen();
     gui.add( olivia, "size", 0, 99 ).listen();
     gui.add( adeymo, "size", 0, 99 ).listen();
 
-    videoControls(0);
-    videoControls(1);
-    //videoControls(2);
-    //videoControls(3);
-
-    /*var f1 = gui.addFolder('video1');
-    f1.add( screen[0], "visible").listen();
-    f1.add( screen[0].material, "opacity", 0, .99 ).listen();
-
-    var f2 = gui.addFolder('video2');
-    f2.add( screen[1], "visible").listen();
-    f2.add( screen[1].material, "opacity", 0, 1 ).listen();
-
-    var f3 = gui.addFolder('video3');
-    f3.add( screen[2], "visible").listen();
-    f3.add( screen[2].material, "opacity", 0, 1 ).listen();
-
-    var f4 = gui.addFolder('video4');
-    f4.add( screen[3], "visible").listen();
-    f4.add( screen[3].material, "opacity", 0, 1 ).listen();
-    */
 
     /* CONFIG RENDERER
     */
@@ -311,20 +228,17 @@ function init() {
 
     controller.appendChild(gui.domElement);
 
-    // create separate window for controls?
-    //var newWin = open('controller','Controls','height=300,width=300');
-
     /* END CONTROLS
     */
 
-    /* ADD LISTENERS
-    */ 
-    // create fallbacks if no midi
+    // ADD LISTENERS
+    // create fallbacks if no midi?
     window.addEventListener('keydown', handleKeyDown, false);
     //window.addEventListener('keyup', handleKeyUp, false);
     window.addEventListener( 'resize', onWindowResize, false );
 
-    // FINE, i'll use jquery
+    // RESIZE PANES
+    // uses jquery
     var isDragging = false;
 
     h.mousedown(function(e){
@@ -346,157 +260,8 @@ function init() {
 
 }
 
-/*UTILTY FUNCTIONS
-*/
-function videoControls(index){
-    var text = 'video' + index; 
-    var f = gui.addFolder(text);
-    f.add( screen[index], "visible").listen();
-    f.add( screen[index].material, "opacity", 0, .99 ).listen();
-    f.open();
-}
-
-var waitingDown = false;
-var waitingUp = false;
-function handleKeyDown(event) {
-    if (! waitingDown ){ 
-        waitingDown = true;
-        if (event.keyCode === 49) {
-            window.is1Down = !window.is1Down;
-        }
-        if (event.keyCode === 50) {
-            window.is2Down = !window.is2Down;
-        }
-        if (event.keyCode === 51) {
-            window.is3Down = !window.is3Down;
-        }
-        setTimeout(function () { waitingDown = false; }, 300);
-    }
-}
-
-function handleKeyUp(event) {
-    /*if (event.keyCode === 49) { 
-        window.is1Down = false;
-    }*/
-    if (event.keyCode === 50) { 
-        window.is2Down = false;
-    }
-    if (event.keyCode === 51) { 
-        window.is3Down = false;
-    }
-}
-
-function onWindowResize() {
-
-    camera.aspect = (l.width()) / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize( l.width(), window.innerHeight );
-
-}
-
-function ease(control, target, easing){
-    var dx = control-target;
-    target += dx * easing;
-    return target; 
-}
-
-// tune fade in/out
-var fade_in;
-var fade_out;
-function fadeIn(object, interval, target){
-    var level = 0;
-    object.material.opacity = 0;
-    object.visible = true;
-    fade_in = setInterval(
-        function(){ 
-            object.material.opacity += .01;
-            level += .01;
-            if( level > target){
-                clearInterval(fade_in);
-            }
-        },
-    interval);
-}
-//screen-specific, should be general
-function fadeOut(index, interval){
-    //screen.material.opacity = 0;
-    var level = screen[index].material.opacity;
-    fade_out = setInterval(
-        function(){ 
-            screen[index].material.opacity -= .01;
-            level -= .01;
-            if(level < 0){
-                screen[index].visible = false;
-                video[index].pause();
-                clearInterval(fade_out);
-            }
-        },
-    interval);
-}
-
-function screenSwitch(control, index){
-    if (control.pressed || window.is1Down) {
-        if(screen[index].visible){
-            fadeOut(index, 1/control.velocity);
-        }else{
-            //console.log(video[index]);
-            video[index].play();
-            fadeIn(screen[index], 1/control.velocity, .3);
-            
-        }
-        control.pressed = false;
-        //window.is1Down = false;
-    }
-}
-
-function screenOpacity(control, index){
-    if(control.turned){
-        screen[index].material.opacity = ease(control.value, screen[index].material.opacity, .1);
-        if(control.value - .01 < screen[index].material.opacity < control.value + .01)
-            setTimeout(function(){ control.turned = false}, 500); //moved to midi_control
-    }
-}
-
-function pressLength(control){
-    var length = Date.now() - control.time; 
-    return length;
-}
-
-/*
-function pulseAnimation(object){
-    if (object.pulse_inc == 1){
-        object.pulse.material.uniforms[ "c" ].value += pulse_options.pace;
-        if (object.pulse.material.uniforms[ "c" ].value > .05)
-            object.pulse_inc = 0;
-    }else{
-        object.pulse.material.uniforms[ "c" ].value -= pulse_options.pace;
-        if (object.pulse.material.uniforms[ "c" ].value < -.2)
-            object.pulse_inc = 1;
-    }
-}
-
-function pulseMaterial(color){
-    var pulseMaterial = new THREE.ShaderMaterial(
-    { 
-        uniforms: 
-        { 
-            "c":   { type: "f", value: .1 }, // intensity variables 
-            "p":   { type: "f", value: 6 },
-            pulseColor: { type: "c", value: new THREE.Color(color) },
-            viewVector: { type: "v3", value: camera.position }
-        },
-
-        vertexShader: document.getElementById( 'vertexShader'   ).textContent,
-        fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
-        side: THREE.FrontSide,
-        blending: THREE.AdditiveBlending,
-        transparent: true
-    } );
-    return pulseMaterial 
-}
-*/
-
+/* piece specific functions
+ */
 function barFormation(control, object){
     if(control.pressed && object.height < 200){
         object.light.visible = true;
@@ -531,7 +296,7 @@ function calendarRecede(control, object){
     }
     object.light.scale.x = ease(object.width, object.light.scale.x, .005 );
 }
-/* END UTILTIES
+/* END piece specific functions 
 */
 
 function animate() {
@@ -562,23 +327,18 @@ function render( time ){
     }
 
     // TODO: add range to ease func
-    // knobs are are bad, need to be rethought 
-    var fog_range = .02;
-    fog_range = knob.eht.value*(.02-.0002)+.0002;
-    scene.fog.density = ease(fog_range, scene.fog.density, .1)
+    //var fog_range = .02;
+    //fog_range = knob.eht.value*(.02-.0002)+.0002;
+    scene.fog.density = ease(.0002, .02, knob.eht.value, scene.fog.density, .1)
 
     //fadeIn(star[p], 100, 1);
 
     // change screen numbering to match or switch to object?
     screenSwitch(pad.one, 0);
     screenSwitch(pad.two, 1);
-    //screenSwitch(pad.thr, 2);
-    //screenSwitch(pad.fur, 3);
 
     screenOpacity(knob.one, 0);
     screenOpacity(knob.two, 1);
-    //screenOpacity(knob.thr, 2);
-    //screenOpacity(knob.fur, 3);
 
     // fix: need ifs to allow dat gui fall back...
 
@@ -605,18 +365,18 @@ function render( time ){
     pulseAnimation(adeymo);
 
     if(breathe){
-        if(octave1.D.pressed){
+        if(pad.fve.pressed){
             //particle_options.color = olivia.color;
             olivia.light.visible = !olivia.light.visible; 
             olivia.pulse.visible = !olivia.pulse.visible;
             adeymo.light.visible = !adeymo.light.visible; 
             adeymo.pulse.visible = !adeymo.pulse.visible;
-            octave1.D.pressed = false; 
+            pad.fve..pressed = false; 
         }
-        if(octave1.D.pressed){    
+        if(pad.six.pressed){    
             adeymo.light.visible = !adeymo.light.visible; 
             adeymo.pulse.visible = !adeymo.pulse.visible;
-            octave1.E.pressed = false; 
+            pad.six.pressed = false; 
         }    
 
         if(octave1.F.pressed){
@@ -624,7 +384,6 @@ function render( time ){
             olivia.pulse.visible = true;
             olivia.level += pressLength(octave1.F)*.001; 
         }
-
         if(octave1.Fsh.pressed){
             olivia.level -= pressLength(octave1.Fsh)*.001; 
         }
@@ -633,7 +392,6 @@ function render( time ){
         olivia.pulse.lookAt(camera.position);
 
         if(octave1.G.pressed){
-            //particle_options.color = adeymo.color;
             adeymo.light.visible = true;
             adeymo.pulse.visible = true;
             adeymo.level += pressLength(octave1.G)*.001; 
@@ -647,18 +405,6 @@ function render( time ){
 
     }
     if(barz){
-        /*if(octave1.A.pressed){ 
-            olivia.height += pressLength(octave1.A)*.001; 
-        }
-        olivia.light.scale.y = ease(olivia.height, olivia.light.scale.y, .05 );
-        olivia.pulse.scale.y = olivia.light.scale.y;
-
-        if(octave1.B.pressed){ 
-            adeymo.height += pressLength(octave1.B)*.001; 
-        }
-        adeymo.light.scale.y = ease(adeymo.height, adeymo.light.scale.y, .05 );
-        adeymo.pulse.scale.y = adeymo.light.scale.y;
-        */
 
         barFormation(octave2.C, bar[0]);
         barFormation(octave2.D, bar[1]);
@@ -677,10 +423,11 @@ function render( time ){
         calendarFormation(octave3.B, cal[5]);
         calendarFormation(octave4.C, cal[6]);
         calendarFormation(octave4.D, cal[7]);
-        if(pad.fve.pressed){
+
+        if(pad.six.pressed){
             barz = false;
             list = true;
-            pad.fve.pressed = false;
+            pad.six.pressed = false;
         }
         
 
@@ -708,9 +455,6 @@ function render( time ){
 
     }
 
-    //controls to modify particle_options
-    //particleSystem.spawnParticle( particle_options );
-   
     /* UPDATE VIDEO 
     */ 
     for (var i = 0; i < video.length ; i++){
@@ -726,10 +470,6 @@ function render( time ){
     }
     /* END VIDEO UPDATE
     */
-
-    //tick += delta;
-
-    //particleSystem.update( tick );
 
     renderer.render( scene, camera );
 
