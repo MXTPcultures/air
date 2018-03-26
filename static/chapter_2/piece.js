@@ -2,11 +2,6 @@ if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
 var camera, scene, renderer , tick = 0;
 
-var h = $('#handle'),
-    l = $('#container'),
-    r = $('#controller'),
-    w = $('body').width() - 18;
-
 var olivia = {
         shape: new THREE.SphereGeometry( 1, 64, 16 ),
         light: new THREE.PointLight( 0x99ceff, 10, 50 ),
@@ -19,7 +14,7 @@ var olivia = {
 }
 
 var adeymo = {
-        shape: new THREE.SphereGeometry( 20, 64, 16 ),
+        shape: new THREE.SphereGeometry( 1, 64, 16 ),
         light: new THREE.PointLight( 0xff0f00, 10, 50 ),
         pulse: undefined,
         pulse_inc: 0,
@@ -43,17 +38,18 @@ for(var i = 0; i < 12; i++){
     };
 }
 
+var ground;
 
 var starCount = 1200;
 var star = [];
 var pulse=0;
 var clock = new THREE.Clock(); //use Date.now() instead?
-var gui = new dat.GUI( { width: 350, autoPlace: false } );
+var gui = new dat.GUI();
 
 var pulse_options; 
 
 var PI = Math.PI;
-var W = l.width(), H = window.innerHeight;
+var W = window.innerWidth, H = window.innerHeight;
 
 var mixer, loader;
 
@@ -62,7 +58,7 @@ var object;
 function init() {
 
     var container = document.getElementById( 'container' );
-    var controller = document.getElementById('controller');
+    //var controller = document.getElementById('controller');
 
     camera = new THREE.PerspectiveCamera( 60, W/H, 1, 10000 );
     camera.position.z = 100;
@@ -74,21 +70,25 @@ function init() {
     /* IMPORT VIDEOS HERE
     */ 
     // this could be better, return scene add, xyz positioning
-    loadVideo("/static/media/resist2.mp4", 0);
-    //screen[0].position.y = -50;
-    scene.add(screen[0]);
+    streets1 = loadVideo("/media/streets.m4v");
+    streets1.screen.position.y = -50;
+    streets1.screen.opacity = 1;
+    scene.add(streets1.screen);
 
-    loadVideo("/static/media/streets.m4v", 1);
-    screen[1].position.y = -50;
-    scene.add(screen[1]);
+    streets2 = loadVideo("/media/streets2.mp4");
+    streets2.screen.position.y = -50;
+    streets2.screen.opacity = 1;
+    scene.add(streets2.screen);
 
-    loadVideo("/static/media/bookstore1s.mp4", 2);
-    screen[2].position.y = -50;
-    scene.add(screen[2]);
+    bookstore1 = loadVideo("/media/bookstore1s.mp4");
+    bookstore1.screen.position.y = -50;
+    bookstore1.screen.opacity = 1;
+    scene.add(bookstore1.screen);
 
-    loadVideo("/static/media/bookstore2s.mp4", 3);
-    screen[3].position.y = -50;
-    scene.add(screen[3]);
+    bookstore2 = loadVideo("/media/bookstore2s.mp4");
+    bookstore2.screen.position.y = -50;
+    bookstore2.screen.opacity = 1;
+    scene.add(bookstore2.screen);
 
     /* END IMPORT
     */
@@ -102,33 +102,33 @@ function init() {
     };
 
     olivia.light.add( new THREE.Mesh( olivia.shape, new THREE.MeshBasicMaterial( { color: olivia.color } ) ) );
-    olivia.light.position.x = 0;
-    olivia.light.position.y = -40;
+    olivia.light.position.x = 90;
+    olivia.light.position.y = 0;
     olivia.light.position.z = 0;
-    olivia.light.visible = false;
+    olivia.light.visible = true;
     scene.add( olivia.light );
 
     olivia.pulse = new THREE.Mesh( olivia.shape.clone(), pulseMaterial(olivia.color) ),
-    olivia.pulse.position.x = 0;
-    olivia.pulse.position.y = -40;
+    olivia.pulse.position.x = 90;
+    olivia.pulse.position.y = 0;
     olivia.pulse.position.z = 0;
     scene.add( olivia.pulse );
 
     adeymo.light.add( new THREE.Mesh( adeymo.shape, new THREE.MeshBasicMaterial( { color: adeymo.color } ) ) );
-    adeymo.light.position.x = 150;
+    adeymo.light.position.x = -90;
     adeymo.light.position.y = 0;
-    adeymo.light.position.z = -100;
+    adeymo.light.position.z = 0;
     scene.add( adeymo.light );
 
     adeymo.pulse = new THREE.Mesh( adeymo.shape.clone(), pulseMaterial(adeymo.color) ),
-    adeymo.pulse.position.x = 150;
+    adeymo.pulse.position.x = -90;
     adeymo.pulse.position.y = 0;
-    adeymo.pulse.position.z = -100;
+    adeymo.pulse.position.z = 0;
     scene.add( adeymo.pulse );
 
     //add ground plane
     var plane = new THREE.PlaneGeometry(1000, 1000);
-    var ground = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( { color: 0x824242 , side: THREE.DoubleSide }));
+    ground = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( { color: 0x824242 , side: THREE.DoubleSide }));
     ground.position. y = -50;
     ground.rotation.x = Math.PI/2; 
     scene.add(ground);
@@ -243,10 +243,17 @@ function init() {
     gui.add( olivia, "size", 0, 50 ).listen();
     gui.add( adeymo, "size", 0, 3 ).listen();
 
-    videoControls(0);
-    videoControls(1);
-    videoControls(2);
-    videoControls(3);
+    olivia.light.visible = true;
+    olivia.pulse.visible = true;
+    adeymo.light.visible = true;
+    adeymo.pulse.visible = true;
+    console.log(olivia);
+    console.log(adeymo);
+
+    videoControls(streets1);
+    videoControls(streets2);
+    videoControls(bookstore1);
+    videoControls(bookstore2);
 
 
     /* CONFIG RENDERER
@@ -265,9 +272,9 @@ function init() {
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     //console.log(controls);
-    gui.domElement.id = 'gui';
+    //gui.domElement.id = 'gui';
 
-    controller.appendChild(gui.domElement);
+    //container.appendChild(gui.domElement);
 
     /* END CONTROLS
     */
@@ -279,146 +286,11 @@ function init() {
     //window.addEventListener('keyup', handleKeyUp, false);
     window.addEventListener( 'resize', onWindowResize, false );
 
-    // FINE, i'll use jquery
-    var isDragging = false;
-
-    h.mousedown(function(e){
-        isDragging = true;
-        e.preventDefault();
-    });
-    $(document).mouseup(function(){
-        isDragging = false;
-    }).mousemove(function(e){
-        if(isDragging){
-            l.css('width', e.pageX);
-            r.css('width', w - e.pageX);
-            camera.aspect = l.width() / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize( l.width(), window.innerHeight );
-        }
-    });
-
 
 }
 
 /*UTILTY FUNCTIONS
 */
-function videoControls(index){
-    var text = 'video' + index; 
-    var f = gui.addFolder(text);
-    f.add( screen[index], "visible").listen();
-    f.add( screen[index].material, "opacity", 0, .99 ).listen();
-    f.open();
-}
-
-var waitingDown = false;
-var waitingUp = false;
-function handleKeyDown(event) {
-    if (! waitingDown ){ 
-        waitingDown = true;
-        if (event.keyCode === 49) {
-            window.is1Down = !window.is1Down;
-        }
-        if (event.keyCode === 50) {
-            window.is2Down = !window.is2Down;
-        }
-        if (event.keyCode === 51) {
-            window.is3Down = !window.is3Down;
-        }
-        setTimeout(function () { waitingDown = false; }, 300);
-    }
-}
-
-function handleKeyUp(event) {
-    /*if (event.keyCode === 49) { 
-        window.is1Down = false;
-    }*/
-    if (event.keyCode === 50) { 
-        window.is2Down = false;
-    }
-    if (event.keyCode === 51) { 
-        window.is3Down = false;
-    }
-}
-
-function onWindowResize() {
-
-    var l = $('#container');
-
-    camera.aspect = (l.width()) / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize( l.width(), window.innerHeight );
-
-}
-
-function ease(control, target, easing){
-    var dx = control-target;
-    target += dx * easing;
-    return target; 
-}
-
-// tune fade in/out
-var fade_in;
-var fade_out;
-function fadeIn(object, interval, target){
-    var level = 0;
-    object.material.opacity = 0;
-    object.visible = true;
-    fade_in = setInterval(
-        function(){ 
-            object.material.opacity += .01;
-            level += .01;
-            if( level > target){
-                clearInterval(fade_in);
-            }
-        },
-    interval);
-}
-//screen-specific, should be general
-function fadeOut(index, interval){
-    //screen.material.opacity = 0;
-    var level = screen[index].material.opacity;
-    fade_out = setInterval(
-        function(){ 
-            screen[index].material.opacity -= .01;
-            level -= .01;
-            if(level < 0){
-                screen[index].visible = false;
-                video[index].pause();
-                clearInterval(fade_out);
-            }
-        },
-    interval);
-}
-
-function screenSwitch(control, index){
-    if (control.pressed || window.is1Down) {
-        if(screen[index].visible){
-            fadeOut(index, 1/control.velocity);
-        }else{
-            //console.log(video[index]);
-            video[index].play();
-            fadeIn(screen[index], 1/control.velocity, .2);
-            
-        }
-        control.pressed = false;
-        //window.is1Down = false;
-    }
-}
-
-function screenOpacity(control, index){
-    if(control.turned){
-        screen[index].material.opacity = ease(control.value, screen[index].material.opacity, .1);
-        if(control.value - .01 < screen[index].material.opacity < control.value + .01)
-            setTimeout(function(){ control.turned = false}, 500); //moved to midi_control
-    }
-}
-
-function pressLength(control){
-    var length = Date.now() - control.time; 
-    return length;
-}
 
 function lightAppear(object, object2, control){
     if(control.pressed){
@@ -448,6 +320,8 @@ var therapy = false;
 var bookstore = false;
 var bookstore2 = false; 
 var bookstore3 = false; 
+
+midiController("akai");
 knob.eht.value = 1;
 
 function render( time ){
@@ -455,51 +329,43 @@ function render( time ){
     var p = Math.floor(Math.random() * starCount);
     star[p].visible = true;
 
-    //if (scene.fog.density > .0002){
-    //    scene.fog.density -= .0001;
-    //}
+    scene.fog.density = ease(.0002, .02, knob.eht.value, scene.fog.density, .1);
 
-    // TODO: add range opt to ease func
-    // knobs are are bad, need to be rethought 
-    var fog_range = .02;
-    fog_range = knob.eht.value*(.02-.0002)+.0002;
-    scene.fog.density = ease(fog_range, scene.fog.density, .1)
+    screenSwitch(pad.one, streets1);
+    screenSwitch(pad.two, streets2);
+    screenSwitch(pad.thr, bookstore1);
+    screenSwitch(pad.fur, bookstore2);
 
-    // change screen numbering to match or switch to object?
-    screenSwitch(pad.one, 0);
-    screenSwitch(pad.two, 1);
-    screenSwitch(pad.thr, 2);
-    screenSwitch(pad.fur, 3);
-
-    screenOpacity(knob.one, 0);
-    screenOpacity(knob.two, 1);
-    screenOpacity(knob.thr, 2);
-    screenOpacity(knob.fur, 3);
+    screenOpacity(knob.one, streets1);
+    screenOpacity(knob.two, streets2);
+    screenOpacity(knob.thr, bookstore1);
+    screenOpacity(knob.fur, bookstore2);
 
     // fix: need ifs to allow dat gui fall back...
 
-    var range = knob.fve.value;
-    range = knob.fve.value*(pulse_options.max-pulse_options.min)+pulse_options.min;
-    pulse_options.pace = ease(range, pulse_options.pace, .05);
+    pulse_options.pace = ease(.0005, .01, knob.fve.value, pulse_options.pace, .05);
 
-    olivia.size = ease(knob.six.value*50, olivia.size, .001)
+    olivia.size = knob.six.value*50;//ease(0, 50, knob.six.value, olivia.size, .001)
     olivia.pulse.scale.x = olivia.size;
     olivia.pulse.scale.y = olivia.size;
     olivia.pulse.scale.z = olivia.size;
 
-    adeymo.size = ease(knob.svn.value*3, adeymo.size, .001)
+    adeymo.size = knob.svn.value*50; //ease(0, 3, knob.svn.value, adeymo.size, .001)
     adeymo.pulse.scale.x = adeymo.size;
     adeymo.pulse.scale.y = adeymo.size;
     adeymo.pulse.scale.z = adeymo.size;
 
+    //console.log(pulse_options.pace);
+
     // slow/stop pulse
     pulseAnimation(olivia);
+    pulseAnimation(adeymo);
     
     olivia.pulse.lookAt(camera.position);
     adeymo.pulse.lookAt(camera.position);
 
     if(supermoon){
-        if(octave2.C.pressed){
+        /*if(octave2.C.pressed){
             adeymo.angle += pressLength(octave2.C)*.00001; 
         }
         if(octave2.Csh.pressed){
@@ -513,7 +379,7 @@ function render( time ){
         adeymo.light.position.y = ease(pY, adeymo.light.position.y, .005 );
         adeymo.pulse.position.x = adeymo.light.position.x;
         adeymo.pulse.position.y = adeymo.light.position.y;
-
+        */
         if(pad.fve.pressed){ 
             supermoon = false;
             therapy = true;
@@ -521,7 +387,7 @@ function render( time ){
         }
     }
     if(therapy){
-        pulseAnimation(adeymo);
+        /*pulseAnimation(adeymo);
         adeymo.light.position.x = ease(0, adeymo.light.position.x, .001 );
         adeymo.light.position.y = ease(-40, adeymo.light.position.y, .001 );
         adeymo.light.position.z = ease(0, adeymo.light.position.z, .001 );
@@ -555,6 +421,9 @@ function render( time ){
         lightAppear(eyes[3], eyes[8], octave2.Dsh);
         lightAppear(eyes[4], eyes[7], octave2.E);
         lightAppear(eyes[5], eyes[6], octave2.F);
+        */
+
+        ground.position.y -= .1;
 
         if(pad.six.pressed){ 
             therapy = false;
@@ -563,6 +432,7 @@ function render( time ){
         }
     }   
     if(bookstore){
+        /*
         pulseAnimation(adeymo);
         adeymo.light.position.x = ease(-90, adeymo.light.position.x, .001 );
         adeymo.light.position.y = ease(0, adeymo.light.position.y, .001 );
@@ -581,18 +451,19 @@ function render( time ){
         olivia.pulse.position.x = olivia.light.position.x;
         olivia.pulse.position.y = olivia.light.position.y;
         olivia.pulse.position.z = olivia.light.position.z;
+        */
         if(pad.svn.pressed){ 
             bookstore = false;
             bookstore2 = true;
             pad.svn.pressed = false ;
-            olivia.level = olivia.light.position.x;
-            adeymo.level = adeymo.light.position.x;
+            //olivia.level = olivia.light.position.x;
+            //adeymo.level = adeymo.light.position.x;
         }
 
     }
 
     if(bookstore2){    
-
+        /*
         if(octave2.C.pressed){
 
             olivia.level -= pressLength(octave2.C)*.001; 
@@ -620,6 +491,12 @@ function render( time ){
         }
         adeymo.light.position.x = ease(adeymo.level, adeymo.light.position.x, .01 );
         adeymo.pulse.position.x = adeymo.light.position.x;
+        */
+        olivia.light.position.x -= .01;
+        olivia.pulse.position.x = olivia.light.position.x;
+
+        adeymo.light.position.x += .01;
+        adeymo.pulse.position.x = adeymo.light.position.x;
 
         if(pad.eht.pressed){
             bookstore3 = true;
@@ -631,6 +508,7 @@ function render( time ){
 
     if(bookstore3){
         //adeymo.color = 0xffffff;
+        /*
         adeymo.light.children[0].material.color[0] = ease(1, adeymo.light.children[0].material.color[0], .001);
         adeymo.light.children[0].material.color[1] = ease(1, adeymo.light.children[0].material.color[1], .001);
         adeymo.light.children[0].material.color[2] = ease(1, adeymo.light.children[0].material.color[2], .001);
@@ -645,24 +523,11 @@ function render( time ){
         olivia.color = ease(0xffffff, olivia.color, .1);
         olivia.pulse.material = pulseMaterial(olivia.color);
         olivia.light.children[0].material.color = olivia.color;
+        */
 
     }
 
-    /* UPDATE VIDEO 
-    */ 
-    for (var i = 0; i < video.length ; i++){
-        if ( video[i].readyState === video[i].HAVE_ENOUGH_DATA ) 
-        {
-            videoImageContext[i].drawImage( video[i], 0, 0, videoImage[i].width, videoImage[i].height );
-            if ( videoTexture[i] ) 
-                videoTexture[i].needsUpdate = true;
-        }
-        if( video[i].readyState === video[i].HAVE_ENOUGH_DATA ){
-          videoTexture[i].needsUpdate = true;
-        }
-    }
-    /* END VIDEO UPDATE
-    */
+    updateAllVideos();
 
     renderer.render( scene, camera );
 
